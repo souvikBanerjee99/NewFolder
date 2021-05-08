@@ -1,0 +1,132 @@
+import React from 'react';
+import styles from 'styled-components';
+import {useState} from 'react';
+import Emoji from './Emoji.jsx';
+import { Markup } from 'interweave';
+import ReactDOMServer from "react-dom/server";
+const Div=styles.div`
+width:70%;
+height:40%;
+background-color: #FFF5F0 ;
+padding: 10px;
+margin: auto;
+margin-top:8px;
+border: 2px outset black;
+`
+const TextArea=styles.textarea`
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    background-color:rgba(255,114,37,0.5);
+    display:block;/*reset from inline*/
+    width:100%;
+    height:100%;
+    margin:0;/*remove defaults*/
+    padding:4px;
+    border:1px solid #333;
+    overflow-y:auto;/*resets IE*/
+    overflow-x:auto;/*resets IE*/
+`
+const Div7=styles.div`
+width:70%;
+height:40%;
+background-color: #FFF5F0 ;
+padding: 10px;
+margin: auto;
+text-align:left;
+margin-top:8px;
+border: 2px outset black;
+overflow-y:auto;
+word-wrap:break-word;
+`
+
+function removelinebreaks( str ) { 
+    return str.replace( /[\r\n]+/gm, "" ); 
+}
+function locations(substring,string){
+    var a=[],i=-1;
+    while((i=string.indexOf(substring,i+1)) >= 0) a.push(i);
+    return a;
+  }
+const emojiMap=new Map(
+    [
+        [':happy', '0x1F600'],
+        [':sad', '0x1F625'],
+      ]
+);
+
+function emojiSetter(type,value){
+    let indexes=locations(type,value);
+        for(var i=0;i<indexes.length;i+=2){
+          let a=indexes[i];
+          let b=indexes[i+1];
+          if(b!=undefined){
+          let str1=value.slice(0,a);
+          let str2=value.slice(a+type.length,b);
+          let str3=value.slice(b+type.length,value.length);
+          let e1=ReactDOMServer.renderToStaticMarkup(<Markup content={str1} />).toString();
+          let e2= ReactDOMServer.renderToStaticMarkup(<span role="img" >{String.fromCodePoint(emojiMap.get(type))}</span>).toString();
+          let e3=ReactDOMServer.renderToStaticMarkup(<Markup content={str2}/>).toString();
+          let e4=  ReactDOMServer.renderToStaticMarkup(<span role="img" >{String.fromCodePoint(emojiMap.get(type))}</span>).toString();
+          let e5= ReactDOMServer.renderToStaticMarkup(<Markup content={str3}/>).toString();
+          value=e1+e2.slice(0,e2.length-1)+e3+e4.slice(0,e4.length-1)+e5.slice(0,e5.length-1);
+          }
+        }
+        return value;
+}
+const Item=props=>{
+    let [name,setNameState]=useState({
+        name:null,
+        ref:React.createRef(),
+    });
+    let flag=0;
+    let length=0;
+    const onChangeHandler=(event)=>{
+        let value=event.target.value;
+        let lastChar=value[value.length-1];
+        let secLC=value[value.length-2];
+        if(value.length>length){
+        if(secLC==','){
+            flag=1;
+        }
+    }else{
+        if(lastChar==','&&flag==1){
+            flag=0;
+        }
+    }
+    length=value.length;
+        if(flag==0){
+        setNameState({
+            ...name,
+            name:event.target.value
+        })
+      }
+    }
+    const emojiAllSetter=(value)=>{
+        value=emojiSetter(':happy',value);
+        value=emojiSetter(':sad',value);
+        return value;
+    }
+    const onChangeTextAreaHandler=(event)=>{
+ 
+        
+        console.log(name.ref.current);
+        value=value.replaceAll(new RegExp('\\~(.*?)\\~',"gs"),"<b>$1</b>");
+        value=value.replaceAll(new RegExp('\\*(.*?)\\*',"gs"),"<i>$1</i>");
+        value=value.replaceAll(new RegExp('\\$(.*?)\\$',"gs"),"<span style='color:red;'>$1</span>");
+        value=value.replaceAll(new RegExp('\\`hl(.*?)\\`hl',"gs"),"<span style='background-color:yellow;'>$1</span>");
+        value=value.replaceAll(new RegExp('\\`codeIt(.*?)\\`codeIt',"gs"),"<div style='background-color:#b1b1b1;border:2px outset #929292;text-align:left;white-space:pre;'><b>$1</b></div>");
+        value=value.replaceAll(new RegExp('\\n',"g"),"<br>");
+        name.ref.current.innerHTML=value;
+    }
+    
+   
+            <input placeholder="Enter your name..." style={{height:"40px",marginBottom:"20px",width:'240px',backgroundColor:'rgba(255,114,37,0.5)'}} type="text" onChange={onChangeHandler}/>
+            <Emoji className="hi" label="hjdh" symbol="0x1F600"/>
+           <TextArea rows="26" placeholder="Enter text here..." onChange={onChangeTextAreaHandler}></TextArea>
+        </Div>
+        </div>
+    )
+}
+
+export default Item;

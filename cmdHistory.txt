@@ -1,0 +1,38 @@
+cd Desktop//New Folder
+cat cd1.txt
+type cd1.txt
+type cd1.txt|less
+type cd1.txt|findstr export default
+type cd1.txt|findstr export 
+type cd1.txt|findstr default 
+type cd1.txt|findstr /n default 
+type cd1.txt|findstr /n default >t.txt
+type cd2.txt
+type cd2.txt|findstr /n /r (.*?)
+type cd2.txt|findstr /n /r (.*?)|count
+type cd2.txt|findstr /n /r (.*?
+type cd2.txt|findstr /n /r .*
+type cd2.txt|findstr /n /r .*[.]ref[.]
+type cd2.txt|findstr /n /r .*[.]ref[.] >logs.txt
+type cd2.txt|findstr /n /r [`].*?[`]
+type cd2.txt|findstr /n /r [`]\\n*.*?\\n*[`]
+type cd2.txt|findstr /n /r [`]\n*.*?\n*[`]
+dir 
+dir
+dir /a
+dir /a[h]
+dir /a[h:]
+dir /a h:s
+dir /a 
+dir /a:h 
+dir /a:hd
+dir /a:d
+dir /a:h
+dir /a:r
+dir /a:-d
+dir /a:-d|>f.txt
+dir /a:-d|output>f.txt
+doskey hsitory
+doskey history
+doskey /history
+doskey /history >cmdHistory.txt

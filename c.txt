@@ -1,0 +1,2 @@
+table:regex_builder_version_control_obj_info
+columns:2,2,[condition#value],str
